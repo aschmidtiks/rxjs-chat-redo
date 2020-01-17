@@ -1,0 +1,10 @@
+<div *ngIf="clientService.getEnteredChatrooms().length < 1; else elseBlockChatrooms">
+  No active chat room!
+</div>
+<ng-template #elseBlockChatrooms>
+  <mat-tab-group>
+    <mat-tab *ngFor="let room of clientService.getEnteredChatrooms()" label="{{room}}">
+      sad
+    </mat-tab>
+  </mat-tab-group>
+</ng-template>

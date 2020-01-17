@@ -9,6 +9,6 @@ import {ClientService} from './client.service';
 export class AppComponent {
   title = 'rxjs-chat';
 
-  constructor(clientService: ClientService) {
+  constructor(private clientService: ClientService) {
   }
 }

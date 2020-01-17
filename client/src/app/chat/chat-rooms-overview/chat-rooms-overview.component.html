@@ -1,0 +1,4 @@
+<p>Available Rooms:</p>
+<div *ngFor="let room of getAvailableRooms()">
+  <button (click)="joinRoom(room.name)">{{room.name}}</button>
+</div>
