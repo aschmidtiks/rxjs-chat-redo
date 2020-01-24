@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {ClientService} from './client.service';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +8,6 @@ import {ClientService} from './client.service';
 export class AppComponent {
   title = 'rxjs-chat';
 
-  constructor(private clientService: ClientService) {
+  constructor() {
   }
 }

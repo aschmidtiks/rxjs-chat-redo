@@ -17,18 +17,23 @@ io.on('connection', function (client) {
     const {
         handleRegister,
         handleJoin,
+        handleChangeRoom,
         handleLeave,
         handleMessage,
         handleGetChatrooms,
         handleGetAvailableUsers,
         handleDisconnect
     } = makeHandlers(client, clientManager, chatroomManager);
+
     console.log('client connected...', client.id);
+
     clientManager.addClient(client);
 
     client.on('register', handleRegister);
 
     client.on('join', handleJoin);
+
+    client.on('changeRoom', handleChangeRoom);
 
     client.on('leave', handleLeave);
 

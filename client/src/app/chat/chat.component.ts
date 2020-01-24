@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ClientService} from '../shared/client.service';
 
 @Component({
   selector: 'app-chat',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChatComponent implements OnInit {
 
-  constructor() { }
+  constructor(private clientService: ClientService) {
+  }
 
   ngOnInit() {
+    this.clientService.register('Rick', (err, user) => {
+      if (err) {
+        console.error(err);
+      } else {
+        // console.log('user ' + user.name + ' is a valid user');
+      }
+    });
   }
 
 }

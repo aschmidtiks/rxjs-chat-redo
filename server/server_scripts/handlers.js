@@ -27,14 +27,14 @@ function makeHandleEvents(client, clientManager, chatroomManager) {
         ]).then(([chatroom, user]) => Promise.resolve({chatroom, user}));
     }
 
+    //todo check if user is already in room
     function handleEvent(chatroomName, createEntry) {
         return ensureValidChatroomAndUserSelected(chatroomName)
             .then(function ({chatroom, user}) {
                 const entry = {user, ...createEntry()};
                 chatroom.addEntry(entry);
-
-        chatroom.broadcastMessage({chat: chatroomName, ...entry});
-        return chatroom;
+                chatroom.broadcastMessage({chat: chatroomName, ...entry});
+                return chatroom;
             });
     }
     return handleEvent;
@@ -55,19 +55,30 @@ module.exports = function (client, clientManager, chatroomManager) {
     }
 
     function handleJoin(chatroomName, callback) {
-        const createEntry = () => ({ event: `joined ${chatroomName}`});
-
+        const createEntry = () => ({event: `joined ${chatroomName}`});
         handleEvent(chatroomName, createEntry)
             .then(function (chatroom) {
                 chatroom.addUser(client);
-
                 callback(null, chatroom.getChatHistory())
             })
             .catch(callback);
     }
 
+    function handleChangeRoom(chatroomName, callback) {
+        const createEntry = () => ({event: `rejoined ${chatroomName}`});
+
+        handleEvent(chatroomName, createEntry)
+            .then(function (chatroom) {
+                callback(null, chatroom.getChatHistory())
+            })
+            .catch(callback);
+        // function renewHistory(chatroom) {
+        //     return callback(null, chatroom.getChatHistory());
+        // }
+    }
+
     function handleLeave(chatroomName, callback) {
-        const createEntry = () => ({ event: `left ${chatroomName}` });
+        const createEntry = () => ({event: `left ${chatroomName}`});
 
         handleEvent(chatroomName, createEntry)
             .then(function (chatroom) {
@@ -78,16 +89,14 @@ module.exports = function (client, clientManager, chatroomManager) {
             .catch(callback);
     }
 
-    function handleMessage({ chatroomName, message } = {}, callback) {
-        const createEntry = () => ({ message })
-
+    function handleMessage({chatroomName, message} = {}, callback) {
+        const createEntry = () => ({message})
         handleEvent(chatroomName, createEntry)
-            .then(() => callback(null))
+            .then(() => {callback(null)})
             .catch(callback)
     }
 
     function handleGetChatrooms(_, callback) {
-         // console.log(callback(null, chatroomManager.serializeChatrooms()));
         return callback(null, chatroomManager.serializeChatrooms())
     }
 
@@ -105,6 +114,7 @@ module.exports = function (client, clientManager, chatroomManager) {
     return {
         handleRegister,
         handleJoin,
+        handleChangeRoom,
         handleLeave,
         handleMessage,
         handleGetChatrooms,

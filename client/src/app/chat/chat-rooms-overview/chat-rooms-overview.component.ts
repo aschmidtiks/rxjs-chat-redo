@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {ClientService} from '../../client.service';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ClientService} from '../../shared/client.service';
+import {RoomTabSelectorService} from '../../shared/room-tab-selector.service';
 
 @Component({
   selector: 'app-chat-rooms-overview',
@@ -10,7 +11,8 @@ export class ChatRoomsOverviewComponent implements OnInit {
 
   private availableRooms;
 
-  constructor(private clientService: ClientService) {
+  constructor(private clientService: ClientService,
+              private roomTabSelectorService: RoomTabSelectorService) {
   }
 
   getAvailableRooms() {
@@ -18,14 +20,20 @@ export class ChatRoomsOverviewComponent implements OnInit {
   }
 
   joinRoom(roomName) {
-    this.clientService.join(roomName, () => {
-      this.clientService.setEnteredChatrooms(roomName);
-      console.log(this.clientService.getEnteredChatrooms());
+    this.clientService.join(roomName, (err, chatHistory) => {
+      if (err) {
+        console.error(err);
+      } else {
+        this.clientService.setEnteredChatrooms(roomName);
+        this.clientService.setCurrentChatroom(roomName);
+        this.clientService.setChatHistory(chatHistory);
+        this.roomTabSelectorService.onNewRoomEntered();
+      }
     });
   }
 
   ngOnInit() {
-    this.clientService.getChatrooms((err, availableRooms) => {
+    this.clientService.getChatrooms((_, availableRooms) => {
       this.availableRooms = availableRooms;
     });
   }

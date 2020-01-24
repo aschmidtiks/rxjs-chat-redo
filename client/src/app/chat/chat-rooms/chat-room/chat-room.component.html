@@ -1,1 +1,5 @@
-<p>chat-room works!</p>
+<!--<div *ngFor="let entry of clientService.getChatHistory()">{{entry.user.name + ' ' + entry.event}}</div>-->
+<div>
+  <div *ngFor="let entry of clientService.getChatHistory()">{{entry.message}}</div>
+  <app-chat-input></app-chat-input>
+</div>
