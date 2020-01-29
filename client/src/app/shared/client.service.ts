@@ -1,6 +1,6 @@
 import * as io from 'socket.io-client';
 import {Injectable, ViewChild} from '@angular/core';
-import {Observable} from 'rxjs';
+import {observable, Observable, Subject} from 'rxjs';
 import {MessageModel} from './message.model';
 import {ChatRoomComponent} from '../chat/chat-rooms/chat-room/chat-room.component';
 
@@ -13,21 +13,18 @@ export class ClientService {
   private currentChatroom;
   private chatHistory: MessageModel[] = [];
 
-  iRegister = 0;
-  newMessage: MessageModel;
   constructor() {
     this.socket = io.connect(this.url);
   }
 
-  // todo wird mehrfach beim empfangen von nachrichten aufgerufen, Debuggen:
-  // todo socket.on wird nur bei Join aufgerufen aber der rest trotzdem wenn nur ne message gesendet wird
-  public registerHandler = () => {
+  // obwohl unsubscribed wird bleibt der observer erhalten und emitted weiter
+  public onMessageReceived = () => {
     return new Observable(observer => {
+      let iRegister = 0;
       this.socket.on('message', (message) => {
-        this.newMessage = message;
-        console.log(message)
-        console.log('REGISTER: ' + (this.iRegister++));
+        console.log('REGISTER: ' + (iRegister++));
         observer.next(message);
+
       });
     });
   }
