@@ -13,8 +13,17 @@ export class ClientService {
   private currentChatroom;
   private chatHistory: MessageModel[] = [];
 
+  private messageSubject = new Subject();
+
   constructor() {
     this.socket = io.connect(this.url);
+  }
+
+  public onMessageReceived2() {
+    this.socket.on('message', (message) => {
+      this.messageSubject.next(message);
+    });
+    return this.messageSubject;
   }
 
   // obwohl unsubscribed wird bleibt der observer erhalten und emitted weiter
@@ -24,7 +33,6 @@ export class ClientService {
       this.socket.on('message', (message) => {
         console.log('REGISTER: ' + (iRegister++));
         observer.next(message);
-
       });
     });
   }
@@ -95,4 +103,3 @@ export class ClientService {
     return this.chatHistory;
   }
 }
-
