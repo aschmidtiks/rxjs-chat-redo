@@ -1,7 +1,6 @@
 module.exports = function ({name, image}) {
     const members = new Map();
     let chatHistory = [];
-    let broadcastMessageI = 1;
 
     function broadcastMessage(message) {
         members.forEach(m => m.emit('message', message));

@@ -12,7 +12,7 @@ import {take} from 'rxjs/operators';
 })
 export class ChatRoomsComponent implements OnInit, OnDestroy {
 
-  private onFirstRoomEnteredSubscription: Subscription;
+  private onNewRoomEntered: Subscription;
   private selected: any;
 
   private didChangeManually = false;
@@ -22,9 +22,8 @@ export class ChatRoomsComponent implements OnInit, OnDestroy {
   }
 
   tabChanged(tabchangedEvent: MatTabChangeEvent) {
-
     if (this.didChangeManually) {
-      this.clientService.changeRoom(tabchangedEvent.tab.textLabel, (err, chatHistory) => { // todo sorgt für doppelte ausgabe bei tabChange
+      this.clientService.changeRoom(tabchangedEvent.tab.textLabel, (err, chatHistory) => {
         if (err) {
           console.error(err);
         } else {
@@ -38,15 +37,14 @@ export class ChatRoomsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.onFirstRoomEnteredSubscription = this.roomTabSelectorService
-      .getObservable()
-      .subscribe(index => {
-        this.selected = index;
-      });
+      this.onNewRoomEntered = this.roomTabSelectorService
+        .getObservable()
+        .subscribe(index => {
+          this.selected = index;
+        });
   }
 
   ngOnDestroy() {
-    this.onFirstRoomEnteredSubscription.unsubscribe();
+    this.onNewRoomEntered.unsubscribe();
   }
-
 }

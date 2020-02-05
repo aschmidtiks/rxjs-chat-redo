@@ -66,15 +66,11 @@ module.exports = function (client, clientManager, chatroomManager) {
 
     function handleChangeRoom(chatroomName, callback) {
         const createEntry = () => ({event: `rejoined ${chatroomName}`});
-
         handleEvent(chatroomName, createEntry)
             .then(function (chatroom) {
                 callback(null, chatroom.getChatHistory())
             })
             .catch(callback);
-        // function renewHistory(chatroom) {
-        //     return callback(null, chatroom.getChatHistory());
-        // }
     }
 
     function handleLeave(chatroomName, callback) {

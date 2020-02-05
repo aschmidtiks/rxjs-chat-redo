@@ -1,8 +1,9 @@
 import * as io from 'socket.io-client';
 import {Injectable, ViewChild} from '@angular/core';
-import {observable, Observable, Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {MessageModel} from './message.model';
 import {ChatRoomComponent} from '../chat/chat-rooms/chat-room/chat-room.component';
+import {take} from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class ClientService {
@@ -13,28 +14,26 @@ export class ClientService {
   private currentChatroom;
   private chatHistory: MessageModel[] = [];
 
-  private messageSubject = new Subject();
+  mainObservable = new Observable( observer => {
+    let iRegister = 0;
+    this.socket.on('message', (message) => {
+      console.log('onMessageReceived: ' + (iRegister++));
+      observer.next(message);
+    });
+  });
+
+  newObservable = new Observable();
 
   constructor() {
     this.socket = io.connect(this.url);
   }
 
-  public onMessageReceived2() {
-    this.socket.on('message', (message) => {
-      this.messageSubject.next(message);
-    });
-    return this.messageSubject;
+  public onMessageReceived = () => {
+    return this.mainObservable;
   }
 
-  // obwohl unsubscribed wird bleibt der observer erhalten und emitted weiter
-  public onMessageReceived = () => {
-    return new Observable(observer => {
-      let iRegister = 0;
-      this.socket.on('message', (message) => {
-        console.log('REGISTER: ' + (iRegister++));
-        observer.next(message);
-      });
-    });
+  public cleanUpObservable() {
+    this.mainObservable = new Observable();
   }
 
   public onError() {
