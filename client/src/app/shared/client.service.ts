@@ -1,9 +1,7 @@
 import * as io from 'socket.io-client';
-import {Injectable, ViewChild} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
 import {MessageModel} from './message.model';
-import {ChatRoomComponent} from '../chat/chat-rooms/chat-room/chat-room.component';
-import {take} from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class ClientService {
@@ -22,8 +20,6 @@ export class ClientService {
     });
   });
 
-  newObservable = new Observable();
-
   constructor() {
     this.socket = io.connect(this.url);
   }
@@ -34,15 +30,6 @@ export class ClientService {
 
   public cleanUpObservable() {
     this.mainObservable = new Observable();
-  }
-
-  public onError() {
-    return new Observable(observer => {
-      this.socket.on('error', (err) => {
-        console.log('received socket error:');
-        console.log(err);
-      });
-    });
   }
 
   public changeRoom(chatroomName, cb) {
@@ -63,11 +50,13 @@ export class ClientService {
   }
 
   public message(chatroomName, msg, cb) {
+    // this.socket.emit('message', {chatroomName, message: msg}, cb);
     this.socket.emit('message', {chatroomName, message: msg}, cb);
   }
 
   public getChatrooms(cb) {
-    this.socket.emit('chatrooms', null, cb);
+    // this.socket.emit('chatrooms', null, cb);
+    this.socket.emit('getChatrooms', cb);
   }
 
   public getAvailableUsers(cb) {
@@ -80,10 +69,6 @@ export class ClientService {
 
   public getEnteredChatrooms() {
     return this.enteredChatroom;
-  }
-
-  public getEnteredChatroomByIndex(desiredIndex) {
-    return this.enteredChatroom[desiredIndex];
   }
 
   public setCurrentChatroom(roomName) {

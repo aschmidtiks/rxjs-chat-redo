@@ -38,4 +38,4 @@ module.exports = function ({name, image}) {
         removeUser,
         serialize
     }
-}
+};

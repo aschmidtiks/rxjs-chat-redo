@@ -45,7 +45,7 @@ module.exports = function (client, clientManager, chatroomManager) {
 
     function handleRegister(userName, callback) {
         if (!clientManager.isUserAvailable(userName)) {
-            return callback('user is not available');
+            return callback('username is not available');
         }
 
         const user = clientManager.getUserByName(userName);

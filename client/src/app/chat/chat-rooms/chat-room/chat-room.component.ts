@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ClientService} from '../../../shared/client.service';
 import {Subscription} from 'rxjs';
 import {MessageModel} from '../../../shared/message.model';
-import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-chat-room',
@@ -13,8 +12,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
 
   private messageSubscription: Subscription;
 
-  // private messageSubscription = new Subject<MessageModel>();
-
   constructor(private clientService: ClientService) {
   }
 
@@ -23,10 +20,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   }
 
   updateChatHistory(entry) {
-    // console.log(this.clientService.getChatHistory());
-    // console.log(entry.user);
-    // console.log('entry: ' + entry.message + 'entry2: ' + entry.chat + ' length?: ' + this.clientService.getChatHistory().length);
-    // this.clientService.getChatHistory().concat(entry);
     this.clientService.getChatHistory().push(entry);
   }
 

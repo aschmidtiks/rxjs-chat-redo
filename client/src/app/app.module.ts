@@ -13,6 +13,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatTabsModule} from '@angular/material/tabs';
 import { ChatInputComponent } from './chat/chat-rooms/chat-room/chat-input/chat-input.component';
 import {RoomTabSelectorService} from './shared/room-tab-selector.service';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {RoomTabSelectorService} from './shared/room-tab-selector.service';
     AppRoutingModule,
     MatGridListModule,
     MatTabsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FormsModule
   ],
   providers: [ClientService, RoomTabSelectorService],
   bootstrap: [AppComponent]
