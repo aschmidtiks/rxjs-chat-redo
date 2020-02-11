@@ -2,7 +2,7 @@
   No active chat room!
 </div>
 <ng-template #elseBlockChatrooms>
-  <mat-tab-group [selectedIndex]="selected" (selectedTabChange)="tabChanged($event)" (click)="didChangeManually=true">
+  <mat-tab-group mat-align-tabs="center" dynamicHeight="true" [selectedIndex]="selected" (selectedTabChange)="tabChanged($event)" (click)="didChangeManually=true">
     <mat-tab *ngFor="let room of clientService.getEnteredChatrooms();" label="{{room}}">
       <ng-template matTabContent><app-chat-room></app-chat-room></ng-template>
     </mat-tab>

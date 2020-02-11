@@ -1,4 +1,17 @@
-module.exports = function (client, clientManager, chatroomManager) {
+function ensureExists(getter, rejectionMessage) {
+    return new Promise((resolve, reject) => {
+        const res = getter();
+        return res ? resolve(res) : reject(rejectionMessage);
+    });
+}
+
+function ensureValidChatroom(chatroomManager, roomName) {
+    return ensureExists(
+        () => chatroomManager.getChatroomByName(roomName),
+        'Room not available!');
+}
+
+module.exports = function (io, client, clientManager, chatroomManager) {
     function handleRegister(userName, callback) {
         // client.data = {name, email};
         client.data = userName;
@@ -6,29 +19,31 @@ module.exports = function (client, clientManager, chatroomManager) {
     }
 
     function handleJoin(roomName, callback) {
-        if (chatroomManager.serializeChatrooms().some(r => r === roomName)) {
+        ensureValidChatroom(chatroomManager, roomName).then((chatroom) => {
             client.join(roomName);
-        } else {
-            const err = 'Room not available!';
-            return callback(err, null);
-        }
-        let room = chatroomManager.getChatroomByName(roomName);
-        return callback(null, room.getChatHistory());
+            return callback(null, chatroom.getChatHistory());
+        }).catch(callback);
     }
 
+    function handleChangeRoom(roomName, callback) {
+        ensureValidChatroom(chatroomManager, roomName).then((chatroom) => {
+            return callback(null, chatroom.getChatHistory());
+        }).catch(callback);
+    }
+    
     function handleGetChatrooms(callback) {
         return callback(null, chatroomManager.serializeChatrooms());
     }
 
-    function handleMessage(data = {roomName, message}, callback) {
+    function handleMessage({roomName, message} = {}, callback) {
         let usrName = client.data;
-        let msg = data.message;
-        const entry = {usrName, msg};
-        console.log(entry);
-        console.log('NAME ' + data.roomName + ' other name ' + chatroomManager.getChatroomByName(data.roomName));
+        const entry = {usrName, message};
 
-        // chatroomManager.getChatroomByName(roomName).addEntry(entry);
-        // client.to(roomName).emit('message', entry);
+        ensureValidChatroom(chatroomManager, roomName).then((chatroom) => {
+            chatroom.addEntry(entry);
+            io.in(roomName).emit('message', entry);
+            callback(null);
+        }).catch(callback);
     }
 
     function handleDisconnect() {
@@ -37,8 +52,9 @@ module.exports = function (client, clientManager, chatroomManager) {
     return {
         handleRegister,
         handleJoin,
+        handleChangeRoom,
         handleGetChatrooms,
-        handleMessage,
-        handleDisconnect
+        handleDisconnect,
+        handleMessage
     };
 };

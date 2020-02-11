@@ -1,5 +1,7 @@
 <!--<div *ngFor="let entry of clientService.getChatHistory()">{{entry.user.name + ' ' + entry.event}}</div>-->
-<div>
+<div style="height: 100%">
   <div *ngFor="let entry of clientService.getChatHistory()">{{entry.message}}</div>
-  <app-chat-input></app-chat-input>
+  <div style="bottom: 5px">
+    <app-chat-input></app-chat-input>
+  </div>
 </div>

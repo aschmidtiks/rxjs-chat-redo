@@ -27,12 +27,12 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     this.messageSubscription = this.clientService
       .onMessageReceived()
       .subscribe((message: MessageModel) => {
+        console.log(message);
         this.onMessageReceived(message);
       });
   }
 
   ngOnDestroy() {
     this.messageSubscription.unsubscribe();
-    this.clientService.cleanUpObservable();
   }
 }

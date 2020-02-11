@@ -12,11 +12,15 @@ export class ClientService {
   private currentChatroom;
   private chatHistory: MessageModel[] = [];
 
-  mainObservable = new Observable( observer => {
-    let iRegister = 0;
+  mainObservable = new Observable(observer => {
+    // let iRegister = 0;
+    // todo return roomName and check for current room first
+    // todo check why observer are not getting deleted
     this.socket.on('message', (message) => {
-      console.log('onMessageReceived: ' + (iRegister++));
-      observer.next(message);
+      // console.log(iRegister++);
+      if (!observer.closed) {
+        observer.next(message);
+      }
     });
   });
 
@@ -28,12 +32,12 @@ export class ClientService {
     return this.mainObservable;
   }
 
-  public cleanUpObservable() {
-    this.mainObservable = new Observable();
-  }
+  // public cleanUpObservable() {
+  //   // this.mainObservable = new Observable();
+  // }
 
-  public changeRoom(chatroomName, cb) {
-    this.socket.emit('changeRoom', chatroomName, cb);
+  public changeRoom(roomName, cb) {
+    this.socket.emit('changeRoom', roomName, cb);
   }
 
   // checks if user is already in database
@@ -41,17 +45,16 @@ export class ClientService {
     this.socket.emit('register', name, cb);
   }
 
-  public join(chatroomName, cb) {
-    this.socket.emit('join', chatroomName, cb);
+  public join(roomName, cb) {
+    this.socket.emit('join', roomName, cb);
   }
 
-  public leave(chatroomName, cb) {
-    this.socket.emit('leave', chatroomName, cb);
+  public leave(roomName, cb) {
+    this.socket.emit('leave', roomName, cb);
   }
 
-  public message(chatroomName, msg, cb) {
-    // this.socket.emit('message', {chatroomName, message: msg}, cb);
-    this.socket.emit('message', {chatroomName, message: msg}, cb);
+  public message(roomName, msg, cb) {
+    this.socket.emit('message', {roomName, message: msg}, cb);
   }
 
   public getChatrooms(cb) {

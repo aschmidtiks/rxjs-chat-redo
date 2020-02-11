@@ -5,10 +5,16 @@
 </div>
 
 <ng-template #showChat>
-  <mat-grid-list cols="2" rowHeight="80%">
-    <mat-grid-tile>
-      <app-chat-rooms-overview></app-chat-rooms-overview>
+  <mat-grid-list cols="4" rowHeight="90%">
+    <mat-grid-tile colspan="1" style="border: 1px solid; display: flex">
+      <div style="position: absolute; top: 50px; left: 10px">
+        <app-chat-rooms-overview></app-chat-rooms-overview>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="3" style="border: 1px solid;">
+      <div style="position: absolute; top: 5px; left: 10px">
       <app-chat-rooms></app-chat-rooms>
+      </div>
     </mat-grid-tile>
   </mat-grid-list>
 </ng-template>

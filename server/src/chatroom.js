@@ -1,13 +1,13 @@
 module.exports = function (roomName) {
   let chatHistory = [];
 
-  function addEntry(entry) {
-      chatHistory.push(entry);
-  }
-
   function getChatHistory() {
       return chatHistory.slice();
   }
+
+    function addEntry(entry) {
+        chatHistory.push(entry);
+    }
 
     function serialize() {
         return roomName
@@ -15,6 +15,7 @@ module.exports = function (roomName) {
 
   return {
       getChatHistory,
+      addEntry,
       serialize
   }
 };

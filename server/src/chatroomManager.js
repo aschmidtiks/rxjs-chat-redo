@@ -3,10 +3,10 @@ const Chatroom = require('./chatroom');
 module.exports = function () {
     const chatrooms = new Map();
     chatrooms.set('Test Room', Chatroom('Test Room'));
+    chatrooms.set('Test Room 2', Chatroom('Test Room 2'));
 
     function getChatrooms() {
         return chatrooms;
-        // return rooms;
     }
 
     function serializeChatrooms() {
